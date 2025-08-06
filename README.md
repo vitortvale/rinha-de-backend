@@ -13,7 +13,7 @@ Este projeto é uma API de alta performance desenvolvida com [NestJS](https://ne
 - **NestJS** – Framework em TypeScript para construir APIs escaláveis e modulares.
 - **PostgreSQL** – Banco de dados relacional usado para armazenar clientes e transações.
 - **Nginx** – Atua como balanceador de carga entre múltiplas instâncias da API.
-- **BullMQ** – Gerencia filas de tarefas assíncronas, ideal para operações como logging e auditoria.
+- **BullMQ** – Gerencia filas de tarefas assíncronas
 
 ---
 
