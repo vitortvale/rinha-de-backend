@@ -37,7 +37,7 @@ export class PaymentsConsumer extends WorkerHost {
     try {
       await firstValueFrom(
         this.httpService.post(
-          'http://localhost:8001/payments',
+          'http://payment-processor-default:8080/payments',
           paymentProcessorRequestDto,
         ),
       )
@@ -48,7 +48,7 @@ export class PaymentsConsumer extends WorkerHost {
       //if error, check health and wait, if healthy wait and try again, if not insert to fallback
       await firstValueFrom(
         this.httpService.post(
-          'http://localhost:8002/payments',
+          'http://payment-processor-fallback:8080/payments',
           paymentProcessorRequestDto,
         ),
       )

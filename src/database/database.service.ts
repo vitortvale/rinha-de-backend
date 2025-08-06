@@ -10,6 +10,7 @@ export class DatabaseService implements OnModuleDestroy {
     port: 5432,
     user: process.env.DB_USER,
     database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD
     
   });
 
@@ -20,6 +21,7 @@ export class DatabaseService implements OnModuleDestroy {
     `
     try {
         const result = await this.pool.query(sql, params);
+        console.log('Writing to db')
     }
     catch(error) {
         throw error

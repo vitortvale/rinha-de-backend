@@ -3,7 +3,7 @@ services:
     image: app
     hostname: api01
     environment:
-      - DB_HOSTNAME=db
+      - DB_HOST=db
       - DB_USER=postgres
       - DB_PASSWORD=123
       - DB_NAME=rinha
@@ -19,8 +19,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.6"
-          memory: "200MB"
+          cpus: "0.7"
+          memory: "150MB"
 
   api02:
     <<: *api
@@ -42,8 +42,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.17"
-          memory: "10MB"
+          cpus: "0.3"
+          memory: "70MB"
 
   db:
     image: postgres:latest
@@ -61,8 +61,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.13"
-          memory: "140MB"
+          cpus: "0.15"
+          memory: "50MB"
 
   redis:
     image: redis:6-alpine
@@ -72,11 +72,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.2"
-          memory: "100MB"
+          cpus: "0.15"
+          memory: "35MB"
 
 networks:
   backend:
     driver: bridge
   payment-processor:
-    driver: bridge  # ou 'external: true' se criada manualmente
+    external: true
