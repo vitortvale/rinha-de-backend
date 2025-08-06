@@ -1,6 +1,5 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { Pool } from 'pg';
-import { from } from 'rxjs';
 import { PaymentSummaryDto } from 'src/payments-summary/dto/payment-summary.dto';
 
 @Injectable()
@@ -10,7 +9,8 @@ export class DatabaseService implements OnModuleDestroy {
     port: 5432,
     user: process.env.DB_USER,
     database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD
+    password: process.env.DB_PASSWORD,
+    max: 20
     
   });
 
@@ -18,10 +18,10 @@ export class DatabaseService implements OnModuleDestroy {
     const sql = `
         INSERT INTO payments (correlationId, amount, requested_at, processor)
         VALUES ($1, $2, $3, $4)
+        ON CONFLICT (correlationId) DO NOTHING
     `
     try {
         const result = await this.pool.query(sql, params);
-        console.log('Writing to db')
     }
     catch(error) {
         throw error

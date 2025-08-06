@@ -8,9 +8,9 @@ const paymentProcessorRequestSchema = z.object({
 })
 
 export class PaymentProcessorRequestDto {
-    private readonly correlationId: string
-    private readonly amount: number
-    private readonly requestedAt: string 
+    readonly correlationId: string
+    readonly amount: number
+    readonly requestedAt: string 
 
     private constructor(data: z.output<typeof paymentProcessorRequestSchema>) {
        this.correlationId = data.correlationId
