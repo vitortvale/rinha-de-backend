@@ -1,6 +1,6 @@
 services:
   api01: &api
-    image: app
+    image: vitortvale/rinha-2025-nestjs:latest 
     hostname: api01
     environment:
       - DB_HOST=db
