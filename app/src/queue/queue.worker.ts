@@ -2,29 +2,44 @@ import { WorkerHost, Processor, InjectQueue } from '@nestjs/bullmq'
 import { Job } from 'bullmq'
 import { Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
-import { DatabaseService } from 'src/database/database.service'
-import { PaymentProcessorRequestDto } from 'src/payment-processor-request/dto/create-payment-processor-request.dto'
 import { firstValueFrom } from 'rxjs'
 import { Queue } from 'bullmq'
+import { RedisService } from 'src/redis/redis.service'
+
 
 @Processor('payments')
 @Injectable()
 export class PaymentsConsumer extends WorkerHost {
   constructor(
+    private readonly redisSerivce: RedisService,
     private readonly httpService: HttpService,
-    private readonly dbService: DatabaseService,
-    @InjectQueue('payments')private readonly queueService : Queue
+    @InjectQueue('payments') private readonly queueService: Queue
   ) {
     super()
   }
 
-  async process(job: Job<PaymentProcessorRequestDto>): Promise<void> {
+  async process(job: Job<any>): Promise<void> {
+    //TODO: insert the key-value in redis properly
+    const paymentRequestDto = job.data
 
-    const paymentProcessorRequestDto = job.data
+    const correlationId = paymentRequestDto.correlationId
+    const amount = paymentRequestDto.amount
+    const requestedAt = paymentRequestDto.requestedAt
 
-    const correlationId = paymentProcessorRequestDto.correlationId
-    const amount = paymentProcessorRequestDto.amount
-    const requestedAt = paymentProcessorRequestDto.requestedAt
+    const paymentProcessorRequestDto = {
+      correlationId: correlationId,
+      amout: amount,
+      requestedAt: requestedAt
+    }
+    const value = {
+      amount: amount,
+      requestedAt: requestedAt
+    }
+    const paymentKeyValueStructure = {
+      key: correlationId,
+      value: value
+    }
+
     try {
       try {
         await firstValueFrom(
@@ -33,9 +48,7 @@ export class PaymentsConsumer extends WorkerHost {
             paymentProcessorRequestDto,
           ),
         )
-        const payment_processor = 'default'
-        const values = [correlationId, amount, requestedAt, payment_processor]
-        await this.dbService.insert(values)
+        const payment_processor = 1
 
       } catch (error) {
         await firstValueFrom(
@@ -44,9 +57,7 @@ export class PaymentsConsumer extends WorkerHost {
             paymentProcessorRequestDto
           ),
         )
-        const payment_processor = 'fallback'
-        const values = [correlationId, amount, requestedAt, payment_processor]
-        await this.dbService.insert(values)
+        const payment_processor = 2
       }
     }
     catch (error) {
@@ -56,7 +67,7 @@ export class PaymentsConsumer extends WorkerHost {
           type: 'exponential',
           delay: 1000
         }
-      }) 
+      })
 
     }
   }

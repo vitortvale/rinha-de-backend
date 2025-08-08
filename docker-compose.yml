@@ -1,17 +1,12 @@
 services:
   api01: &api
-    image: vitortvale/rinha-2025-nestjs:latest 
+    image: app
     hostname: api01
     environment:
-      - DB_HOST=db
-      - DB_USER=postgres
-      - DB_PASSWORD=123
-      - DB_NAME=rinha
       - REDIS_HOST=redis
     ports:
       - "8081:8080"
     depends_on:
-      - db
       - redis
     networks:
       - backend
@@ -19,7 +14,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.55"
+          cpus: "0.6"
           memory: "100MB"
 
   api02:
@@ -30,7 +25,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.55"
+          cpus: "0.60"
           memory: "100MB"
 
   nginx:
@@ -50,25 +45,6 @@ services:
           cpus: "0.1"
           memory: "40MB"
 
-  db:
-    image: postgres:17-alpine
-    hostname: db
-    environment:
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=rinha
-    ports:
-      - "5433:5432"
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - backend
-    deploy:
-      resources:
-        limits:
-          cpus: "0.15"
-          memory: "80MB"
-
   redis:
     image: redis:6-alpine
     hostname: redis
@@ -77,7 +53,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.15"
+          cpus: "0.20"
           memory: "30MB"
 
 networks:
