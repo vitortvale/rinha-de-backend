@@ -2,6 +2,8 @@
 
 Este projeto é uma API de alta performance desenvolvida com [NestJS](https://nestjs.com/) para a competição [Rinha de Backend](https://github.com/zanfranceschi/rinha-de-backend-2025). A aplicação foi pensada para escalar bem sob carga, utilizando balanceamento, processamento assíncrono e banco de dados relacional.
 
+Essa arquitetura foi utilizada no meu primeiro pull request pra rinha. Uma nova usando redis no lugar do postgres vai ser postada em breve.
+
 <p align="center">
   <img src="./img/architecture.jpeg" alt="Diagrama de Arquitetura" width="600">
 </p>
