@@ -8,7 +8,6 @@ export class PaymentsSummaryController {
     
     @Get()
     async getSummary(@Query('from') from:Date, @Query('to') to:Date) {
-        return this.paymentsSummaryService.getSummary(from, to)
-
+       return await this.paymentsSummaryService.getSummary(from, to)
     }
 }

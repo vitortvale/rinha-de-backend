@@ -10,8 +10,17 @@ export class RedisService {
     port: parseInt(process.env.REDIS_PORT || '6379')
   })
 
-  async set(procesedPayment: any) {
-    //await this.redis.set(a,b,'NX')
+  async set(paymentKeyValueStructure: any) {
+    const key = paymentKeyValueStructure.key 
+    const value = paymentKeyValueStructure.value
+  try {
+      await this.redis.set(key,value,'NX')
+    }
+    catch(error) {
+      console.log('did not hit redis')
+    }
   }
-
+  async getSummary(fromDate: string, toDate: string) {
+    
+  }
 }

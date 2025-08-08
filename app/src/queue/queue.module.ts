@@ -3,7 +3,7 @@ import { Module } from "@nestjs/common";
 import { QueueService } from "./queue.service";
 import { PaymentsConsumer } from "./queue.worker";
 import { HttpModule } from "@nestjs/axios";
-
+import { RedisModule} from "../redis/redis.module"
 @Module({
   imports: [
     BullModule.forRoot({
@@ -15,7 +15,8 @@ import { HttpModule } from "@nestjs/axios";
     BullModule.registerQueue({
       name: 'payments',
     }),
-    HttpModule
+    HttpModule,
+    RedisModule
   ],
   providers: [
     QueueService,

@@ -4,14 +4,14 @@ import { Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import { firstValueFrom } from 'rxjs'
 import { Queue } from 'bullmq'
-import { RedisService } from 'src/redis/redis.service'
+import { RedisService } from '../redis/redis.service'
 
 
 @Processor('payments')
 @Injectable()
 export class PaymentsConsumer extends WorkerHost {
   constructor(
-    private readonly redisSerivce: RedisService,
+    private readonly redisService: RedisService,
     private readonly httpService: HttpService,
     @InjectQueue('payments') private readonly queueService: Queue
   ) {
@@ -49,6 +49,7 @@ export class PaymentsConsumer extends WorkerHost {
           ),
         )
         const payment_processor = 1
+        await this.redisService.set(paymentKeyValueStructure)
 
       } catch (error) {
         await firstValueFrom(
@@ -57,6 +58,7 @@ export class PaymentsConsumer extends WorkerHost {
             paymentProcessorRequestDto
           ),
         )
+        await this.redisService.set(paymentKeyValueStructure)
         const payment_processor = 2
       }
     }
