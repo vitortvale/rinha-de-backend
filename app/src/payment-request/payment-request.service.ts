@@ -15,9 +15,9 @@ export class PaymentsRequestService {
     const requestedAt = Date.parse(isoTime)
 
     const paymentProcessorRequestDto = {
-      correlationId: correlationId,
-      amount: amount,
-      requestedAt: requestedAt,
+      "correlationId": correlationId,
+      "amount": amount,
+      "requestedAt": requestedAt,
     }
 
     await this.queueService.add('payments', paymentProcessorRequestDto)

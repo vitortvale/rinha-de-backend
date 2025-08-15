@@ -6,7 +6,8 @@ export class PaymentsSummaryController {
   constructor(private paymentsSummaryService: PaymentsSummaryService) { }
 
   @Get()
-  async getSummary(@Query('from') from: String, @Query('to') to: String) {
-    return await this.paymentsSummaryService.getSummary(from, to)
+  async getSummary(@Query('from') from: string, @Query('to') to: string) {
+    await this.paymentsSummaryService.getSummary(from, to)
+    return
   }
 }

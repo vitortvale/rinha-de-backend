@@ -11,18 +11,22 @@ export class RedisService implements OnModuleDestroy {
   })
 
   async zadd(dto: any) {
-    const score = Number(dto.requestedAt)
+    const score = dto.requestedAt
     try {
-      await this.redis.zadd('payments', score, JSON.stringify(dto), 'NX')
+      await this.redis.zadd("payments", "NX", score, JSON.stringify(dto))
     }
     catch (error) {
-      console.log('did not hit redis')
+      console.log(error)
     }
   }
-  async getSummary(fromDate: String, toDate: String) {
-    await this.redis.zrangebyscore('payment', Number(fromDate), Number(toDate))
-  }
 
+  async getSummary(fromDate: string, toDate: string) {
+    const fromDateIso = Date.parse(fromDate)
+    const toDateIso = Date.parse(toDate)
+
+    const results = await this.redis.zrangebyscore("payments", fromDateIso, toDateIso)
+    //console.log(results)
+}
 
   async onModuleDestroy() {
     await this.redis.quit();

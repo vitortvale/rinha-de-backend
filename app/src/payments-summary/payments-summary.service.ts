@@ -5,7 +5,7 @@ import { RedisService } from "../redis/redis.service"
 export class PaymentsSummaryService {
   constructor(private redisService: RedisService) { }
 
-  async getSummary(fromDate: String, toDate: String) {
+  async getSummary(fromDate: string, toDate: string) {
     await this.redisService.getSummary(fromDate, toDate)
   }
 

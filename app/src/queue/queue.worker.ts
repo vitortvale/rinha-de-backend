@@ -26,35 +26,41 @@ export class PaymentsConsumer extends WorkerHost {
     const requestedAt = paymentRequestDto.requestedAt
 
     const paymentProcessorRequestDto = {
+      "correlationId": correlationId,
+      "amount": amount,
+      "requestedAt" : requestedAt
     }
-
+  //Pra escrever no banco precisa ser timestamp normal, para a transoformacao em int iso deve ser feita internamente
     try {
       try {
+        console.log(paymentProcessorRequestDto)
         await firstValueFrom(
           this.httpService.post(
             'http://payment-processor-default:8080/payments',
-            paymentProcessorRequestDto,
-          ),
+            paymentProcessorRequestDto
+          )
         )
         await this.redisService.zadd({
-          "correlationId": correlationId,
-          "amount": amount,
-          "requestedAt": requestedAt,
-          "processor": "default"
+          correlationId: correlationId,
+          amount: amount,
+          requestedAt: requestedAt,
+          processor: "default"
         })
 
 
       } catch (error) {
+        console.log(paymentProcessorRequestDto)
         await firstValueFrom(
           this.httpService.post(
-            'http://payment-processor-fallback:8080/payments', paymentProcessorRequestDto
-          ),
+            'http://payment-processor-fallback:8080/payments',
+            paymentProcessorRequestDto
+          )
         )
         await this.redisService.zadd({
-          "correlationId": correlationId,
-          "amount": amount,
-          "requestedAt": requestedAt,
-          "processor": "fallback"
+          correlationId: correlationId,
+          amount: amount,
+          requestedAt: requestedAt,
+          processor: "fallback"
         })
       }
     }
