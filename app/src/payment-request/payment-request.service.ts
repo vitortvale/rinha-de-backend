@@ -11,11 +11,12 @@ export class PaymentsRequestService {
 
     const correlationId = paymentRequestDto.correlationId
     const amount = paymentRequestDto.amount
-    const requestedAt = new Date().toISOString()
+    let isoTime = new Date().toISOString()
+    const requestedAt = Date.parse(isoTime)
 
     const paymentProcessorRequestDto = {
-      correlationId : correlationId,
-      amount : amount,
+      correlationId: correlationId,
+      amount: amount,
       requestedAt: requestedAt,
     }
 

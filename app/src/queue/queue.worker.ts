@@ -26,17 +26,6 @@ export class PaymentsConsumer extends WorkerHost {
     const requestedAt = paymentRequestDto.requestedAt
 
     const paymentProcessorRequestDto = {
-      "correlationId": correlationId,
-      "amount": amount,
-      "requestedAt": requestedAt
-    }
-    const value = {
-      "amount": amount,
-      "requestedAt": requestedAt
-    }
-    const paymentKeyValueStructure = {
-      "key": correlationId,
-      "value": value
     }
 
     try {
@@ -47,25 +36,26 @@ export class PaymentsConsumer extends WorkerHost {
             paymentProcessorRequestDto,
           ),
         )
-        const dto = {
-          "paymentInfo": paymentKeyValueStructure,
-          "processor": 1
-        }
-        await this.redisService.set(dto)
+        await this.redisService.zadd({
+          "correlationId": correlationId,
+          "amount": amount,
+          "requestedAt": requestedAt,
+          "processor": "default"
+        })
+
 
       } catch (error) {
         await firstValueFrom(
           this.httpService.post(
-            'http://payment-processor-fallback:8080/payments',
-            paymentProcessorRequestDto
+            'http://payment-processor-fallback:8080/payments', paymentProcessorRequestDto
           ),
         )
-        const dto = {
-          "paymentInfo": paymentKeyValueStructure,
-          "processor": 2
-        }
-        await this.redisService.set(dto)
-        const payment_processor = 2
+        await this.redisService.zadd({
+          "correlationId": correlationId,
+          "amount": amount,
+          "requestedAt": requestedAt,
+          "processor": "fallback"
+        })
       }
     }
     catch (error) {
